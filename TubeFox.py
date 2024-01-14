@@ -61,17 +61,67 @@ class TubeFox:
         json_data = json.loads(json_text)
         return dict(json_data)
 
+    @property
     def get_video_download_links(self):
-        pass
+        """
+        Property that retrieves a dictionary of video download links along with their corresponding quality.
+        Returns:
+            dict: A dictionary where keys represent video quality, and values are the associated download links.
+        """
+        video_links = self.get_all_data_in_dict()['streamingData']['formats']
+        videos_dict = {}
+        for link in video_links:
+            quality = link['height']
+            source_link = link['url']
+            videos_dict[quality] = source_link
+        return videos_dict
 
+    @property
     def get_thumbnail_download_links(self):
-        pass
+        """
+        Property that fetches a dictionary of thumbnail download links with their corresponding quality.
+        Returns:
+            dict: A dictionary where keys represent thumbnail quality, and values are the associated download links.
+        """
+        thumbnail_links = self.get_all_data_in_dict()['videoDetails']['thumbnail']['thumbnails']
+        thumbnail_dict = {}
+        for link in thumbnail_links:
+            quality = link['height']
+            source_link = link['url']
+            thumbnail_dict[quality] = source_link
+        return thumbnail_dict
 
+    @property
     def get_audio_download_links(self):
-        pass
+        """
+        Property that obtains a dictionary of audio download links and their corresponding bitrate.
+        Returns:
+            dict: A dictionary where keys represent audio bitrate, and values are the associated download links.
+        """
+        audios = self.get_all_data_in_dict()['streamingData']['adaptiveFormats']
+        audio_dict = {}
+        for link in audios:
+            # mimetype = link['mimeType']
+            if "audio/" in link['mimeType']:
+                bitrate = link['bitrate']
+                source_link = link['url']
+                audio_dict[bitrate] = source_link
+        return audio_dict
 
+    @property
     def get_subtitles_download_links(self):
-        pass
+        """
+        Property that obtains a dictionary of subtitles download links and their corresponding language.
+        Returns:
+            dict: A dictionary where keys represent subtitle language, and values are the associated download links.
+        """
+        subtitles = self.get_all_data_in_dict()['captions']['playerCaptionsTracklistRenderer']['captionTracks']
+        subtitles_dict = {}
+        for subtitle in subtitles:
+            language = subtitle['name']['simpleText']
+            source_link = subtitle['baseUrl']
+            subtitles_dict[language] = source_link
+        return subtitles_dict
 
     @property
     def videoid(self):
@@ -113,3 +163,7 @@ if __name__ == "__main__":
     print(yt.title)
     print(yt.description)
     print(yt.keywords)
+    print(yt.get_video_download_links)
+    print(yt.get_thumbnail_download_links)
+    print(yt.get_subtitles_download_links)
+    print(yt.get_audio_download_links)
