@@ -1,7 +1,5 @@
 import re
 import json
-import time
-
 import requests
 from tqdm import tqdm
 from bs4 import BeautifulSoup
