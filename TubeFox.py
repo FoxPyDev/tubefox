@@ -138,47 +138,81 @@ class TubeFox:
         keywords = self.video_details.get('keywords', [])
         return ', '.join(keywords)
 
-    def download_video(self, chunk_size=1024):
+    def download_file(self, file_type, best_quality_link, extension, chunk_size=1024):
         """
-        Downloads the video with the highest quality available.
-
-        This method identifies the video link with the highest quality from the available download links.
-        It then initiates a streaming download of the video, displaying a progress bar using the 'tqdm' library.
+        Downloads a file with the best available quality and displays information about the process.
 
         Parameters:
-            chunk_size (int): The size of each data chunk to download. Defaults to 1024 bytes
+            file_type (str): Type of the file ('video', 'thumbnail', 'audio').
+            best_quality_link (str): Link to the file with the best quality.
+            extension (str): File extension ('mp4', 'jpg', 'mp3').
+            chunk_size (int): Size of each chunk for download. Defaults to 1024 bytes.
+
         Returns:
-            Non
-        Note:
-            The downloaded video is saved in the current working directory with a filename derived from
-            the video's title, cleaned using the 'clean_filename' function
+            None
         """
-        best_quality_link = self.get_video_download_links[max(self.get_video_download_links.keys())]
-        print(best_quality_link)
+        # Check if the link is empty or None
+        if not best_quality_link:
+            print(f"No {file_type} download link available.")
+            return
+
         response = requests.get(best_quality_link, stream=True)
         total_size = int(response.headers.get('content-length', 0))
-        print("Start download video")
-        with open(f'./{clean_filename(self.title)}.mp4', 'wb') as video_file, tqdm(
-                desc=f"{self.title}.mp4", total=total_size, unit='B', unit_scale=True
+        print(f"Start download {file_type}")
+        with open(f'./{clean_filename(self.title)}.{extension}', 'wb') as file, tqdm(
+                desc=f"{clean_filename(self.title)}.{extension}", total=total_size, unit='B', unit_scale=True
         ) as progress_bar:
             for chunk in response.iter_content(chunk_size=chunk_size):
                 if chunk:
-                    video_file.write(chunk)
+                    file.write(chunk)
                     progress_bar.update(len(chunk))
-        print("Video downloaded")
+        print(f"{file_type} downloaded")
 
-    def download_thumbnail(self, file_name=title):
-        pass
+    def download_video(self, chunk_size=1024):
+        """
+        Downloads the video with the best available quality.
 
-    def download_audio(self, file_name=title):
-        pass
+        Parameters:
+            chunk_size (int): Size of each chunk for download. Defaults to 1024 bytes.
+
+        Returns:
+            None
+        """
+        best_quality_link = self.get_video_download_links[max(self.get_video_download_links.keys())]
+        self.download_file('Video', best_quality_link, 'mp4', chunk_size)
+
+    def download_thumbnail(self, chunk_size=1024):
+        """
+        Downloads the thumbnail image with the best available quality.
+
+        Parameters:
+            chunk_size (int): Size of each chunk for download. Defaults to 1024 bytes.
+
+        Returns:
+            None
+        """
+        best_quality_link = self.get_thumbnail_download_links[max(self.get_thumbnail_download_links.keys())]
+        self.download_file('Thumbnail', best_quality_link, 'jpg', chunk_size)
+
+    def download_audio(self, chunk_size=1024):
+        """
+        Downloads the audio with the best available quality.
+
+        Parameters:
+            chunk_size (int): Size of each chunk for download. Defaults to 1024 bytes.
+
+        Returns:
+            None
+        """
+        best_quality_link = self.get_audio_download_links[max(self.get_audio_download_links.keys())]
+        self.download_file('Audio', best_quality_link, 'mp3', chunk_size)
 
     def download_subtitles(self, file_name=title):
         pass
 
 
 if __name__ == "__main__":
-    yt = TubeFox('https://www.youtube.com/watch?v=0iNgXGGcTIw')
+    yt = TubeFox('https://www.youtube.com/watch?v=YOUR_VIDEO_ID')
     print(yt.videoid)
     print(yt.title)
     print(yt.description)
@@ -188,3 +222,5 @@ if __name__ == "__main__":
     print(yt.get_subtitles_download_links)
     print(yt.get_audio_download_links)
     yt.download_video()
+    yt.download_thumbnail()
+    yt.download_audio()
