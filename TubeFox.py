@@ -68,13 +68,8 @@ class TubeFox:
         Returns:
             dict: A dictionary where keys represent video quality, and values are the associated download links.
         """
-        video_links = self.get_all_data_in_dict()['streamingData']['formats']
-        videos_dict = {}
-        for link in video_links:
-            quality = link['height']
-            source_link = link['url']
-            videos_dict[quality] = source_link
-        return videos_dict
+        video_links = self.get_all_data_in_dict().get('streamingData', {}).get('formats', [])
+        return {link.get('height', 'N/A'): link.get('url', '') for link in video_links}
 
     @property
     def get_thumbnail_download_links(self):
@@ -83,13 +78,8 @@ class TubeFox:
         Returns:
             dict: A dictionary where keys represent thumbnail quality, and values are the associated download links.
         """
-        thumbnail_links = self.get_all_data_in_dict()['videoDetails']['thumbnail']['thumbnails']
-        thumbnail_dict = {}
-        for link in thumbnail_links:
-            quality = link['height']
-            source_link = link['url']
-            thumbnail_dict[quality] = source_link
-        return thumbnail_dict
+        thumbnail_links = self.get_all_data_in_dict().get('videoDetails', {}).get('thumbnail', {}).get('thumbnails', [])
+        return {thumbnail.get('height', 'N/A'): thumbnail.get('url', '') for thumbnail in thumbnail_links}
 
     @property
     def get_audio_download_links(self):
@@ -98,15 +88,9 @@ class TubeFox:
         Returns:
             dict: A dictionary where keys represent audio bitrate, and values are the associated download links.
         """
-        audios = self.get_all_data_in_dict()['streamingData']['adaptiveFormats']
-        audio_dict = {}
-        for link in audios:
-            # mimetype = link['mimeType']
-            if "audio/" in link['mimeType']:
-                bitrate = link['bitrate']
-                source_link = link['url']
-                audio_dict[bitrate] = source_link
-        return audio_dict
+        audios = self.get_all_data_in_dict().get('streamingData', {}).get('adaptiveFormats', [])
+        return {link.get('bitrate', 'N/A'): link.get('url', '') for link in audios if
+                "audio/" in link.get('mimeType', '')}
 
     @property
     def get_subtitles_download_links(self):
@@ -115,13 +99,9 @@ class TubeFox:
         Returns:
             dict: A dictionary where keys represent subtitle language, and values are the associated download links.
         """
-        subtitles = self.get_all_data_in_dict()['captions']['playerCaptionsTracklistRenderer']['captionTracks']
-        subtitles_dict = {}
-        for subtitle in subtitles:
-            language = subtitle['name']['simpleText']
-            source_link = subtitle['baseUrl']
-            subtitles_dict[language] = source_link
-        return subtitles_dict
+        subtitles = self.get_all_data_in_dict().get('captions', {}).get('playerCaptionsTracklistRenderer', {}).get(
+            'captionTracks', [])
+        return {el.get('name', {}).get('simpleText', 'N/A'): el.get('baseUrl', '') for el in subtitles}
 
     @property
     def videoid(self):
