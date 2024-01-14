@@ -1,7 +1,11 @@
 import re
 import json
+import time
+
 import requests
+from tqdm import tqdm
 from bs4 import BeautifulSoup
+from Helper import clean_filename
 
 """ 
 TubeFox is a lightweight and easy-to-use module for retrieving information about YouTube videos, 
@@ -136,9 +140,47 @@ class TubeFox:
         keywords = self.video_details.get('keywords', [])
         return ', '.join(keywords)
 
+    def download_video(self, chunk_size=1024):
+        """
+        Downloads the video with the highest quality available.
+
+        This method identifies the video link with the highest quality from the available download links.
+        It then initiates a streaming download of the video, displaying a progress bar using the 'tqdm' library.
+
+        Parameters:
+            chunk_size (int): The size of each data chunk to download. Defaults to 1024 bytes
+        Returns:
+            Non
+        Note:
+            The downloaded video is saved in the current working directory with a filename derived from
+            the video's title, cleaned using the 'clean_filename' function
+        """
+        best_quality_link = self.get_video_download_links[max(self.get_video_download_links.keys())]
+        print(best_quality_link)
+        response = requests.get(best_quality_link, stream=True)
+        total_size = int(response.headers.get('content-length', 0))
+        print("Start download video")
+        with open(f'./{clean_filename(self.title)}.mp4', 'wb') as video_file, tqdm(
+                desc=f"{self.title}.mp4", total=total_size, unit='B', unit_scale=True
+        ) as progress_bar:
+            for chunk in response.iter_content(chunk_size=chunk_size):
+                if chunk:
+                    video_file.write(chunk)
+                    progress_bar.update(len(chunk))
+        print("Video downloaded")
+
+    def download_thumbnail(self, file_name=title):
+        pass
+
+    def download_audio(self, file_name=title):
+        pass
+
+    def download_subtitles(self, file_name=title):
+        pass
+
 
 if __name__ == "__main__":
-    yt = TubeFox('https://www.youtube.com/watch?v=EHi0RDZ31VA')
+    yt = TubeFox('https://www.youtube.com/watch?v=0iNgXGGcTIw')
     print(yt.videoid)
     print(yt.title)
     print(yt.description)
@@ -147,3 +189,4 @@ if __name__ == "__main__":
     print(yt.get_thumbnail_download_links)
     print(yt.get_subtitles_download_links)
     print(yt.get_audio_download_links)
+    yt.download_video()
