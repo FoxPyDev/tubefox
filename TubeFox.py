@@ -34,15 +34,25 @@ class TubeFox:
                                  An empty dictionary if details are not available or parsing fails.
         """
         self.video_url = video_url
+        self.page_html = self._get_page_html()
+        self.video_details = self.get_all_data_in_dict().get('videoDetails', {})
+
+    def _get_page_html(self):
+        """
+        Retrieves and returns the parsed HTML content of the YouTube video page.
+        This method is called during the initialization to make an HTTP GET request to the video URL
+        and parse the HTML content using BeautifulSoup.
+        Returns:
+            BeautifulSoup: Parsed HTML content of the YouTube video page.
+                           None if the request or parsing fails.
+        """
         try:
             response = requests.get(self.video_url)
             if response.status_code == 200:
-                self.page_html = BeautifulSoup(response.content, "html.parser")
-            else:
-                self.page_html = None
+                return BeautifulSoup(response.content, "html.parser")
         except requests.RequestException:
-            self.page_html = None
-        self.video_details = self.get_all_data_in_dict().get('videoDetails', {})
+            pass
+        return None
 
     def get_all_data_in_dict(self):
         """
@@ -55,7 +65,6 @@ class TubeFox:
 
         Returns:
             dict: A dictionary containing the parsed data from the 'ytInitialPlayerResponse' JSON on the YouTube page.
-
         """
         script_tag = self.page_html.find('script', string=re.compile(r'ytInitialPlayerResponse'))
         json_match = re.search(r'ytInitialPlayerResponse\s*=\s*({.*?})\s*;', script_tag.text)
@@ -214,7 +223,6 @@ class TubeFox:
         The method retrieves a dictionary of subtitle download links and their corresponding language
         using the 'ytInitialPlayerResponse' JSON on the YouTube page. It then downloads each subtitle file and
         saves it with the format "{language} - {cleaned_video_title}.xml" in the current directory.
-
         """
         subtitles_dict = self.get_subtitles_download_links
         for subtitle in subtitles_dict:
