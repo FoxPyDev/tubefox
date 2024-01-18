@@ -16,8 +16,10 @@ class TubeFox:
     def __init__(self, video_url):
         """
         Initializes a TubeFox instance with the provided YouTube video URL.
+
         Parameters:
             video_url (str): The URL of the YouTube video.
+
         The method starts by storing the provided video URL as an instance variable.
         It then attempts to make an HTTP GET request to the video URL using the 'requests' library.
         If the response status code is 200 (OK), it proceeds to parse the HTML content of the page
@@ -26,10 +28,11 @@ class TubeFox:
         attribute is set to None.
         Subsequently, the method initializes the 'video_details' attribute by calling the 'get_all_data_in_dict'
         method, extracting the 'videoDetails' information from the 'ytInitialPlayerResponse' JSON on the YouTube page.
+
         Attributes:
             video_url (str): The YouTube video URL.
             page_html (BeautifulSoup): Parsed HTML content of the YouTube video page.
-            None if the request or parsing fails.
+                           None if the request or parsing fails.
             video_details (dict): Parsed video details extracted from the 'ytInitialPlayerResponse' JSON.
                                  An empty dictionary if details are not available or parsing fails.
         """
@@ -40,8 +43,10 @@ class TubeFox:
     def _get_page_html(self):
         """
         Retrieves and returns the parsed HTML content of the YouTube video page.
+
         This method is called during the initialization to make an HTTP GET request to the video URL
         and parse the HTML content using BeautifulSoup.
+
         Returns:
             BeautifulSoup: Parsed HTML content of the YouTube video page.
                            None if the request or parsing fails.
@@ -73,9 +78,14 @@ class TubeFox:
         return dict(json_data)
 
     @property
+    def generate_filename(self):
+        return clean_filename(self.title)
+
+    @property
     def get_video_download_links(self):
         """
         Property that retrieves a dictionary of video download links along with their corresponding quality.
+
         Returns:
             dict: A dictionary where keys represent video quality, and values are the associated download links.
         """
@@ -86,6 +96,7 @@ class TubeFox:
     def get_thumbnail_download_links(self):
         """
         Property that fetches a dictionary of thumbnail download links with their corresponding quality.
+
         Returns:
             dict: A dictionary where keys represent thumbnail quality, and values are the associated download links.
         """
@@ -96,6 +107,7 @@ class TubeFox:
     def get_audio_download_links(self):
         """
         Property that obtains a dictionary of audio download links and their corresponding bitrate.
+
         Returns:
             dict: A dictionary where keys represent audio bitrate, and values are the associated download links.
         """
@@ -107,6 +119,7 @@ class TubeFox:
     def get_subtitles_download_links(self):
         """
         Property that obtains a dictionary of subtitles download links and their corresponding language.
+
         Returns:
             dict: A dictionary where keys represent subtitle language, and values are the associated download links.
         """
@@ -147,11 +160,13 @@ class TubeFox:
         keywords = self.video_details.get('keywords', [])
         return ', '.join(keywords)
 
-    def download_file(self, file_type, best_quality_link, extension, chunk_size=1024):
+    def _download_file(self, path, filename, file_type, best_quality_link, extension, chunk_size=1024):
         """
         Downloads a file with the best available quality and displays information about the process.
 
         Parameters:
+            path (str): Path where the file will be saved.
+            filename (str): Name of the file to be saved.
             file_type (str): Type of the file ('video', 'thumbnail', 'audio').
             best_quality_link (str): Link to the file with the best quality.
             extension (str): File extension ('mp4', 'jpg', 'mp3').
@@ -165,11 +180,17 @@ class TubeFox:
             print(f"No {file_type} download link available.")
             return
 
+        if not filename:
+            filename = self.generate_filename
+
+        if not path:
+            path = "./"
+
         response = requests.get(best_quality_link, stream=True)
         total_size = int(response.headers.get('content-length', 0))
         print(f"Start download {file_type}")
-        with open(f'./{clean_filename(self.title)}.{extension}', 'wb') as file, tqdm(
-                desc=f"{clean_filename(self.title)}.{extension}", total=total_size, unit='B', unit_scale=True
+        with open(f'{path}{filename}.{extension}', 'wb') as file, tqdm(
+                desc=f"{filename}.{extension}", total=total_size, unit='B', unit_scale=True
         ) as progress_bar:
             for chunk in response.iter_content(chunk_size=chunk_size):
                 if chunk:
@@ -177,46 +198,52 @@ class TubeFox:
                     progress_bar.update(len(chunk))
         print(f"{file_type} downloaded")
 
-    def download_video(self, chunk_size=1024):
+    def download_video(self, path=None, filename=None, chunk_size=1024):
         """
         Downloads the video with the best available quality.
 
         Parameters:
+            path (str): Path where the file will be saved.
+            filename (str): Name of the file to be saved.
             chunk_size (int): Size of each chunk for download. Defaults to 1024 bytes.
 
         Returns:
             None
         """
         best_quality_link = self.get_video_download_links[max(self.get_video_download_links.keys())]
-        self.download_file('Video', best_quality_link, 'mp4', chunk_size)
+        self._download_file(path, filename, 'Video', best_quality_link, 'mp4', chunk_size)
 
-    def download_thumbnail(self, chunk_size=1024):
+    def download_thumbnail(self, path=None, filename=None, chunk_size=1024):
         """
         Downloads the thumbnail image with the best available quality.
 
         Parameters:
+            path (str): Path where the file will be saved.
+            filename (str): Name of the file to be saved.
             chunk_size (int): Size of each chunk for download. Defaults to 1024 bytes.
 
         Returns:
             None
         """
         best_quality_link = self.get_thumbnail_download_links[max(self.get_thumbnail_download_links.keys())]
-        self.download_file('Thumbnail', best_quality_link, 'jpg', chunk_size)
+        self._download_file(path, filename, 'Thumbnail', best_quality_link, 'jpg', chunk_size)
 
-    def download_audio(self, chunk_size=1024):
+    def download_audio(self, path=None, filename=None, chunk_size=1024):
         """
         Downloads the audio with the best available quality.
 
         Parameters:
+            path (str): Path where the file will be saved.
+            filename (str): Name of the file to be saved.
             chunk_size (int): Size of each chunk for download. Defaults to 1024 bytes.
 
         Returns:
             None
         """
         best_quality_link = self.get_audio_download_links[max(self.get_audio_download_links.keys())]
-        self.download_file('Audio', best_quality_link, 'mp3', chunk_size)
+        self._download_file(path, filename, 'Audio', best_quality_link, 'mp3', chunk_size)
 
-    def download_subtitles(self):
+    def download_subtitles(self, path=None):
         """
         Downloads subtitle files associated with the YouTube video in various languages.
 
@@ -224,10 +251,13 @@ class TubeFox:
         using the 'ytInitialPlayerResponse' JSON on the YouTube page. It then downloads each subtitle file and
         saves it with the format "{language} - {cleaned_video_title}.xml" in the current directory.
         """
+        if not path:
+            path = "./"
+
         subtitles_dict = self.get_subtitles_download_links
         for subtitle in subtitles_dict:
             response = requests.get(subtitles_dict[subtitle]).content
-            with open(f"./{subtitle} - {clean_filename(self.title)}.xml", "wb") as xml:
+            with open(f"{path}{subtitle} - {self.generate_filename}.xml", "wb") as xml:
                 xml.write(response)
                 print(f"{subtitle} subtitle saved")
 
