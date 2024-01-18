@@ -1,3 +1,4 @@
+import os
 import re
 import json
 import requests
@@ -184,7 +185,7 @@ class TubeFox:
             filename = self.generate_filename
 
         if not path:
-            path = "./"
+            path = os.getcwd()
 
         response = requests.get(best_quality_link, stream=True)
         total_size = int(response.headers.get('content-length', 0))
@@ -252,7 +253,7 @@ class TubeFox:
         saves it with the format "{language} - {cleaned_video_title}.xml" in the current directory.
         """
         if not path:
-            path = "./"
+            path = os.getcwd()
 
         subtitles_dict = self.get_subtitles_download_links
         for subtitle in subtitles_dict:
