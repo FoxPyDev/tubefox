@@ -207,8 +207,21 @@ class TubeFox:
         best_quality_link = self.get_audio_download_links[max(self.get_audio_download_links.keys())]
         self.download_file('Audio', best_quality_link, 'mp3', chunk_size)
 
-    def download_subtitles(self, file_name=title):
-        pass
+    def download_subtitles(self):
+        """
+        Downloads subtitle files associated with the YouTube video in various languages.
+
+        The method retrieves a dictionary of subtitle download links and their corresponding language
+        using the 'ytInitialPlayerResponse' JSON on the YouTube page. It then downloads each subtitle file and
+        saves it with the format "{language} - {cleaned_video_title}.xml" in the current directory.
+
+        """
+        subtitles_dict = self.get_subtitles_download_links
+        for subtitle in subtitles_dict:
+            response = requests.get(subtitles_dict[subtitle]).content
+            with open(f"./{subtitle} - {clean_filename(self.title)}.xml", "wb") as xml:
+                xml.write(response)
+                print(f"{subtitle} subtitle saved")
 
 
 if __name__ == "__main__":
@@ -224,3 +237,4 @@ if __name__ == "__main__":
     yt.download_video()
     yt.download_thumbnail()
     yt.download_audio()
+    yt.download_subtitles()
