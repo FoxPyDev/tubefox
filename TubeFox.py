@@ -85,13 +85,53 @@ class TubeFox:
     @property
     def get_video_download_links(self):
         """
-        Property that retrieves a dictionary of video download links along with their corresponding quality.
+            Retrieves the download links for video streams with various qualities.
 
-        Returns:
-            dict: A dictionary where keys represent video quality, and values are the associated download links.
-        """
-        video_links = self.get_all_data_in_dict().get('streamingData', {}).get('formats', [])
-        return {link.get('height', 'N/A'): link.get('url', '') for link in video_links}
+            This property sends a POST request to the YouTube API endpoint to obtain video streaming data.
+            It includes information such as video quality, format, and download links. The response is then
+            processed to extract and return a dictionary where keys represent the video quality (height) and
+            values are the corresponding download links.
+
+            Returns:
+                dict: A dictionary where keys represent the video quality (height),
+                and values are the associated download links.
+
+            Note:
+                The method relies on the 'requests' library to communicate with the YouTube API.
+                The API key, user-agent, and payload information are used to authenticate and request the required data.
+                The returned dictionary may include various video qualities, and the 'N/A' placeholder is used
+                for cases where the quality information is not available.
+
+            Example:
+                If the video has streaming data for 720p and 1080p qualities, the returned dictionary may look like:
+                {
+                    '720p': 'https://example.com/video_720p.mp4',
+                    '1080p': 'https://example.com/video_1080p.mp4',
+                }
+            """
+        url = 'https://www.youtube.com/youtubei/v1/player?key=AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w'
+
+        headers = {
+            'Content-Type': 'application/json',
+            'User-Agent': 'com.google.android.youtube/17.36.4 (Linux; U; Android 12; GB) gzip'
+        }
+
+        payload = {
+            "videoId": f'{self.videoid}',
+            "context": {
+                "client": {
+                    "clientName": "ANDROID",
+                    "clientVersion": "17.10.35",
+                    "androidSdkVersion": 30
+                }
+            }
+        }
+
+        response = requests.post(url, data=json.dumps(payload), headers=headers)
+        data = response.json()
+        video_links = data.get('streamingData', {}).get('formats', [])
+        video_links_dict = {link.get('height', 'N/A'): link.get('url', '') for link in video_links}
+        return video_links_dict
 
     @property
     def get_thumbnail_download_links(self):
