@@ -18,7 +18,7 @@ class WebScraper:
             pass
         return None
 
-    def _get_data(self):
+    def get_data(self):
         page_source = self._get_page_source()
         if page_source:
             script_tag = page_source.find('script', string=re.compile(r'ytInitialPlayerResponse'))

@@ -1,16 +1,14 @@
-from metadata import Metadata
 import json
 import requests
 import configparser
 import ast
 
 
-class AppScraper(Metadata):
-    def __init__(self, video_url):
-        super().__init__(video_url)
-        self.video_id = self.id
+class AppScraper:
+    def __init__(self, video_id):
+        self.video_id = video_id
 
-    def _get_page_source(self):
+    def get_page_source(self):
         config = configparser.ConfigParser()
         config.read('config.ini')
         api_url = config.get('Settings', 'api_url')
@@ -20,7 +18,7 @@ class AppScraper(Metadata):
 
         try:
             payload = {
-                "videoId": f'{self.id}',
+                "videoId": f'{self.video_id}',
                 "context": {
                     "client": {
                         "clientName": "ANDROID",
@@ -32,7 +30,7 @@ class AppScraper(Metadata):
 
             response = requests.post(api_url+api_key, data=json.dumps(payload), headers=headers)
             if response.status_code == 200:
-                return {response.json()}
+                return response.json()
         except requests.RequestException:
             pass
         return None

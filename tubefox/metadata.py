@@ -1,10 +1,6 @@
-from tubefox.web_scraper import WebScraper
-
-
-class Metadata(WebScraper):
-    def __init__(self, video_url):
-        super().__init__(video_url)
-        self.all_data = self.data_dict.get('videoDetails', {})
+class Metadata:
+    def __init__(self, data_dict):
+        self.all_data = data_dict
 
     @property
     def id(self):
