@@ -8,5 +8,5 @@ class TubeFox:
         self.url = url
         self.web_data_dict = WebScraper(self.url).get_data()
         self.videoid = Metadata(self.web_data_dict).id
-        self.app_data_dict = AppScraper(self.videoid).get_page_source()
+        self.app_data_dict = AppScraper(self.videoid).get_data()
 
