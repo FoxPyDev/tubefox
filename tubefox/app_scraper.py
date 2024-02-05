@@ -7,8 +7,10 @@ import ast
 class AppScraper:
     def __init__(self, video_id):
         self.video_id = video_id
+        self.data_dict = self.get_data
 
-    def get_page_source(self):
+    @property
+    def get_data(self):
         config = configparser.ConfigParser()
         config.read('config.ini')
         api_url = config.get('Settings', 'api_url')
@@ -37,4 +39,5 @@ class AppScraper:
 
 
 if __name__ == "__main__":
-    pass
+    yt = AppScraper("VX-mp48z-Rg")
+    print(yt.data_dict)
