@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 class WebScraper:
     def __init__(self, video_url):
         self.video_url = video_url
-        self.data_dict = self._get_data()
+        self.data_dict = self.get_data
 
     def _get_page_source(self):
         try:
@@ -18,6 +18,7 @@ class WebScraper:
             pass
         return None
 
+    @property
     def get_data(self):
         page_source = self._get_page_source()
         if page_source:
@@ -29,4 +30,5 @@ class WebScraper:
 
 
 if __name__ == "__main__":
-    pass
+    yt = WebScraper("https://www.youtube.com/watch?v=VX-mp48z-Rg")
+    print(yt.data_dict)
