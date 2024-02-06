@@ -27,8 +27,3 @@ class WebScraper:
             json_text = json_match.group(1)
             json_data = json.loads(json_text)
             return dict(json_data)
-
-
-if __name__ == "__main__":
-    yt = WebScraper("https://www.youtube.com/watch?v=VX-mp48z-Rg")
-    print(yt.data_dict)
