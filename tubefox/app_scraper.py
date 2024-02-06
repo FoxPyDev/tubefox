@@ -36,8 +36,3 @@ class AppScraper:
         except requests.RequestException:
             pass
         return None
-
-
-if __name__ == "__main__":
-    yt = AppScraper("VX-mp48z-Rg")
-    print(yt.data_dict)
