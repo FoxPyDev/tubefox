@@ -1,6 +1,5 @@
 import html
 from helpers import TimeConvertor
-
 from bs4 import BeautifulSoup
 import requests
 
@@ -24,7 +23,3 @@ class Subtitles:
             formatted_subtitles += (f'{text_blocks.index(block)+1}\n{convertor.convert_start_time} --> '
                                     f'{convertor.convert_end_time}\n{html.unescape(block.text)}\n')
         return formatted_subtitles
-
-
-if __name__ == "__main__":
-    pass
