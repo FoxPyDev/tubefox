@@ -1,5 +1,5 @@
 import html
-from helpers import TimeConvertor
+from tubefox.helpers import TimeConvertor
 from bs4 import BeautifulSoup
 import requests
 

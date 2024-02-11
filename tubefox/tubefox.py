@@ -1,12 +1,12 @@
 from typing import Optional
 
-from web_scraper import WebScraper
-from app_scraper import AppScraper
-from data_collector import DataCollector
-from downloader import Downloader
-from subtitles import Subtitles
-from subtitles import save_subtitle
-from helpers import clean_filename
+from tubefox.web_scraper import WebScraper
+from tubefox.app_scraper import AppScraper
+from tubefox.data_collector import DataCollector
+from tubefox.downloader import Downloader
+from tubefox.subtitles import Subtitles
+from tubefox.subtitles import save_subtitle
+from tubefox.helpers import clean_filename
 
 
 class TubeFox:
