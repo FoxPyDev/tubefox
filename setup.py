@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='tubefox',
-    version='1.0.0',
+    version='0.8.1',
     author='@FoxPyDev Yaroslav Lysenko',
     author_email='foxpythondev@gmail.com',
     description='A library for scraping metadata and downloading YouTube videos',
