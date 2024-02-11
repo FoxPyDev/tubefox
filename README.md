@@ -1,32 +1,71 @@
 # TubeFox
+TubeFox is a Python library that provides convenient methods for scraping data, downloading media, and managing subtitles from YouTube videos.
 
-TubeFox is a lightweight and easy-to-use Python module designed for retrieving information about YouTube videos. 
-
-It allows users to fetch details such as video title, description, tags, and provides functionality for downloading videos and video thumbnails. 
-
-This module is built on top of the requests and beautifulsoup4 libraries.
+## Installation
+You can install TubeFox using pip:
+```python
+pip install tubefox
+```
 
 ## Usage
 
 ```python
-import TubeFox
+from tubefox import TubeFox
 
-# Example usage
-video_url = "https://www.youtube.com/watch?v=your_video_id"
-tube_fox_instance = TubeFox(video_url)
+# Initialize TubeFox with the URL of the YouTube video
+yt = TubeFox('https://www.youtube.com/watch?v=VIDEO_ID')
 
-# Retrieve video details
-print("Video ID:", tube_fox_instance.videoid)
-print("Title:", tube_fox_instance.title)
-print("Description:", tube_fox_instance.description)
-print("Keywords:", tube_fox_instance.keywords)
+# Get video metadata
+print("Video ID:", yt.id)
+print("Title:", yt.title)
+print("Description:", yt.description)
+print("Keywords:", yt.keywords)
 
-# Additional functionalities (to be implemented)
-tube_fox_instance.download_video
-tube_fox_instance.download_thumbnail
-tube_fox_instance.download_audio
-tube_fox_instance.download_subtitles
+# Download video
+yt.download_video()
+
+# Download video with custom options
+yt.download_video(path='../', filename='tubefox_test_video', quality=360)
+
+# Download muted video
+yt.download_muted_video()
+
+# Download muted video with custom options
+yt.download_muted_video(path='../', filename='tubefox_test_muted_video', quality=1080)
+
+# Download audio
+yt.download_audio()
+
+# Download audio with custom options
+yt.download_audio(path='../', filename='tubefox_test_audio')
+
+# Download thumbnail
+yt.download_thumbnail()
+
+# Download thumbnail with custom options
+yt.download_thumbnail(path='../')
+
+# Download subtitles
+yt.download_subtitles(mode='srt')
+
+# Download subtitles with default options
+yt.download_subtitles()
 ```
+## License
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Contributing
+Contributions are welcome! Feel free to submit pull requests or open issues for any bugs or feature requests.
+
+## Acknowledgements
+TubeFox uses the following open-source libraries:
+```python
+BeautifulSoup
+requests
+tqdm
+```
+## Disclaimer
+This project is not affiliated with or endorsed by YouTube. Use responsibly and respect the terms of service of the platforms you interact with.
 ## Contact
 Author: [FoxPyDev](https://github.com/FoxPyDev)
 
