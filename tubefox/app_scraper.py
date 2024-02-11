@@ -5,12 +5,36 @@ import ast
 
 
 class AppScraper:
-    def __init__(self, video_id):
-        self.video_id = video_id
-        self.data_dict = self.get_data
+    """
+    AppScraper class for scraping data related to a YouTube video using an external API.
+
+    Args:
+        video_id (str): The ID of the YouTube video.
+
+    Attributes:
+        video_id (str): The ID of the YouTube video.
+        data_dict (dict): A dictionary containing the scraped data.
+
+    Raises:
+        requests.RequestException: If an error occurs while making the API request.
+
+    Note:
+        This class requires a 'config.ini' file to be present in the same directory,
+        containing necessary configuration parameters such as 'api_url', 'api_key', and 'headers'.
+    """
+
+    def __init__(self, video_id: str) -> None:
+        self.video_id: str = video_id
+        self.data_dict: dict = self.get_data
 
     @property
-    def get_data(self):
+    def get_data(self) -> dict:
+        """
+        Method to fetch data related to the video from an external API.
+
+        Returns:
+            dict: A dictionary containing the scraped data, or None if the request fails.
+        """
         config = configparser.ConfigParser()
         config.read('config.ini')
         api_url = config.get('Settings', 'api_url')
