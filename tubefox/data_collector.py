@@ -1,7 +1,3 @@
-from web_scraper import WebScraper
-from app_scraper import AppScraper
-
-
 class DataCollector:
     def __init__(self, data_dict):
         self.data_dict = data_dict
@@ -37,18 +33,3 @@ class DataCollector:
     def collect_thumbnail_links(self):
         thumbnail_links = self.data_dict.get('videoDetails', {}).get('thumbnail', {}).get('thumbnails', [])
         return {thumbnail.get('height', 'N/A'): thumbnail.get('url', '') for thumbnail in thumbnail_links}
-
-
-if __name__ == "__main__":
-    web = WebScraper("https://www.youtube.com/watch?v=VX-mp48z-Rg")
-    app = AppScraper("VX-mp48z-Rg")
-    data1 = DataCollector(web.data_dict)
-    data2 = DataCollector(app.data_dict)
-    print(data1.collect_subtitles_links())
-    print(data2.collect_subtitles_links())
-    # print(data1.collect_audio_links())
-    # print(data2.collect_audio_links())
-    # print(data1.collect_thumbnail_links())
-    # print(data2.collect_thumbnail_links())
-    # print(data1.collect_muted_video_links())
-    # print(data2.collect_muted_video_links())
