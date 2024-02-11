@@ -4,6 +4,11 @@ from bs4 import BeautifulSoup
 import requests
 
 
+def save_subtitle(filename, path, filetype, subtitle):
+    with open(f'{path}{filename}.{filetype}', 'wb') as subtitle_file:
+        subtitle_file.write(subtitle.encode())
+
+
 class Subtitles:
     def __init__(self, subtitle_link):
         self.subtitle_link = subtitle_link
@@ -15,7 +20,7 @@ class Subtitles:
         return html.unescape(subtitle)
 
     @property
-    def subtitles_to_sub(self):
+    def subtitles_to_srt(self):
         text_blocks = self.xml_subtitle.findAll("text")
         formatted_subtitles = ''
         for block in text_blocks:
