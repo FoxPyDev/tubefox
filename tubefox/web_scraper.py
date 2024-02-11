@@ -5,11 +5,32 @@ from bs4 import BeautifulSoup
 
 
 class WebScraper:
-    def __init__(self, video_url):
-        self.video_url = video_url
-        self.data_dict = self.get_data
+    """
+    WebScraper class for scraping data from a YouTube video webpage.
 
-    def _get_page_source(self):
+    Args:
+        video_url (str): The URL of the YouTube video.
+
+    Attributes:
+        video_url (str): The URL of the YouTube video.
+        data_dict (dict): A dictionary containing the scraped data.
+
+    Note:
+        This class uses BeautifulSoup and regular expressions to parse the HTML content of the webpage.
+    """
+
+    def __init__(self, video_url: str) -> None:
+        self.video_url: str = video_url
+        self.data_dict: dict = self.get_data
+
+    def _get_page_source(self) -> BeautifulSoup:
+        """
+        Method to retrieve the HTML source code of the webpage.
+
+        Returns:
+            BeautifulSoup: A BeautifulSoup object containing the parsed HTML of the webpage,
+                           or None if the request fails.
+        """
         try:
             response = requests.get(self.video_url)
             if response.status_code == 200:
@@ -19,7 +40,14 @@ class WebScraper:
         return None
 
     @property
-    def get_data(self):
+    def get_data(self) -> dict:
+        """
+        Method to extract relevant data from the webpage.
+
+        Returns:
+            dict: A dictionary containing the extracted data,
+                  or None if the webpage content cannot be parsed.
+        """
         page_source = self._get_page_source()
         if page_source:
             script_tag = page_source.find('script', string=re.compile(r'ytInitialPlayerResponse'))
