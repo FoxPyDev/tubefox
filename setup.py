@@ -23,6 +23,7 @@ setup(
     install_requires=[
         'beautifulsoup4',
         'requests',
-        'tqdm'
+        'tqdm',
+        'lxml'
     ],
 )
