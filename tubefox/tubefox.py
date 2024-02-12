@@ -57,12 +57,12 @@ class TubeFox:
             path (str, optional): The path where the downloaded file will be saved. Defaults to current directory.
             quality (int, optional): The desired quality of the video. Defaults to the highest available quality.
         """
-        best_quality_link = yt.app_collected_data.collect_video_links()[max(
-            yt.app_collected_data.collect_video_links().keys())]
+        best_quality_link = self.app_collected_data.collect_video_links()[max(
+            self.app_collected_data.collect_video_links().keys())]
         if quality is None:
             download_link = best_quality_link
         else:
-            download_link = yt.app_collected_data.collect_video_links().get(int(quality))
+            download_link = self.app_collected_data.collect_video_links().get(int(quality))
         if path is None:
             path = "./"
         if filename is None:
@@ -85,12 +85,12 @@ class TubeFox:
             path (str, optional): The path where the downloaded file will be saved. Defaults to current directory.
             quality (int, optional): The desired quality of the video. Defaults to the highest available quality.
         """
-        best_quality_link = yt.app_collected_data.collect_muted_video_links()[max(
-            yt.app_collected_data.collect_muted_video_links().keys())]
+        best_quality_link = self.app_collected_data.collect_muted_video_links()[max(
+            self.app_collected_data.collect_muted_video_links().keys())]
         if quality is None:
             download_link = best_quality_link
         else:
-            download_link = yt.app_collected_data.collect_muted_video_links().get(int(quality))
+            download_link = self.app_collected_data.collect_muted_video_links().get(int(quality))
         if path is None:
             path = "./"
         if filename is None:
@@ -113,12 +113,12 @@ class TubeFox:
             path (str, optional): The path where the downloaded file will be saved. Defaults to current directory.
             quality (int, optional): The desired quality of the audio. Defaults to the highest available quality.
         """
-        best_quality_link = yt.app_collected_data.collect_audio_links()[max(
-            yt.app_collected_data.collect_audio_links().keys())]
+        best_quality_link = self.app_collected_data.collect_audio_links()[max(
+            self.app_collected_data.collect_audio_links().keys())]
         if quality is None:
             download_link = best_quality_link
         else:
-            download_link = yt.app_collected_data.collect_audio_links().get(int(quality))
+            download_link = self.app_collected_data.collect_audio_links().get(int(quality))
         if path is None:
             path = "./"
         if filename is None:
@@ -141,12 +141,12 @@ class TubeFox:
             path (str, optional): The path where the downloaded file will be saved. Defaults to current directory.
             quality (int, optional): The desired quality of the thumbnail. Defaults to the highest available quality.
         """
-        best_quality_link = yt.web_collected_data.collect_thumbnail_links()[max(
-            yt.web_collected_data.collect_thumbnail_links().keys())]
+        best_quality_link = self.web_collected_data.collect_thumbnail_links()[max(
+            self.web_collected_data.collect_thumbnail_links().keys())]
         if quality is None:
             download_link = best_quality_link
         else:
-            download_link = yt.web_collected_data.collect_thumbnail_links().get(int(quality))
+            download_link = self.web_collected_data.collect_thumbnail_links().get(int(quality))
 
         if path is None:
             path = "./"
