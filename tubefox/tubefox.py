@@ -187,21 +187,3 @@ class TubeFox:
                 save_subtitle(subtitle=subtitle_text, path=path,
                               filename=f'{filename} - {subtitle}',
                               filetype='txt')
-
-
-if __name__ == "__main__":
-    yt = TubeFox('https://www.youtube.com/watch?v=VIDEO_ID')
-    print(yt.id)
-    print(yt.title)
-    print(yt.description)
-    print(yt.keywords)
-    yt.download_video()
-    yt.download_video(path='../', filename='tubefox_test_video', quality=360)
-    yt.download_muted_video()
-    yt.download_muted_video(path='../', filename='tubefox_test_muted_video', quality=1080)
-    yt.download_audio()
-    yt.download_audio(path='../', filename='tubefox_test_audio')
-    yt.download_thumbnail()
-    yt.download_thumbnail(path='../')
-    yt.download_subtitles(mode='srt')
-    yt.download_subtitles()
