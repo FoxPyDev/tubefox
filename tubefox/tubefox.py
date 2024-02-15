@@ -22,8 +22,7 @@ class TubeFox:
         self.url: str = url
         self.web_collected_data: DataCollector = DataCollector(WebScraper(self.url).data_dict)
         self.app_collected_data: DataCollector = DataCollector(
-            AppScraper(self.web_collected_data.collect_metadata()['id']).data_dict()
-        )
+            AppScraper(self.web_collected_data.collect_metadata()['id']).data_dict)
 
     @property
     def id(self) -> str:
