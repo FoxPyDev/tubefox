@@ -50,14 +50,22 @@ class Downloader:
             print(f"No {self.file_type} download link available.")
             return
 
-        response = requests.get(self.download_link, stream=True)
-        total_size = int(response.headers.get('content-length', 0))
-        print(f"Start download {self.file_type}")
-        with open(f'{self.path}{self.filename}.{self.extension}', 'wb') as file, tqdm(
-                desc=f"{self.filename}.{self.extension}", total=total_size, unit='B', unit_scale=True
-        ) as progress_bar:
-            for chunk in response.iter_content(chunk_size=self.chunk_size):
-                if chunk:
-                    file.write(chunk)
-                    progress_bar.update(len(chunk))
-        print(f"{self.file_type} downloaded")
+        headers = {
+            'Content-Type': 'application/json',
+            'User-Agent': 'com.google.android.youtube/17.36.4 (Linux; U; Android 12; GB) gzip'
+        }
+
+        response = requests.get(self.download_link, stream=True, headers=headers)
+        if response.status_code == 200:
+            total_size = int(response.headers.get('content-length', 0))
+            print(f"Start download {self.file_type}")
+            with open(f'{self.path}{self.filename}.{self.extension}', 'wb') as file, tqdm(
+                    desc=f"{self.filename}.{self.extension}", total=total_size, unit='B', unit_scale=True
+            ) as progress_bar:
+                for chunk in response.iter_content(chunk_size=self.chunk_size):
+                    if chunk:
+                        file.write(chunk)
+                        progress_bar.update(len(chunk))
+            print(f"{self.file_type} downloaded")
+        else:
+            print("Error connecting")
