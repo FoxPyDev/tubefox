@@ -5,6 +5,7 @@ from configparser import ConfigParser
 import ast
 from typing import Dict, Union
 
+
 class AppScraper:
     """
     AppScraper class for scraping data related to a YouTube video using an external API.
