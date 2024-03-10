@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name='tubefox',
-    version='0.8.4',
+    version='0.8.6',
     author='@FoxPyDev Yaroslav Lysenko',
     author_email='foxpythondev@gmail.com',
     description="A package for scraping YouTube data",
