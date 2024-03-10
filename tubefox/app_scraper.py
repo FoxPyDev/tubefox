@@ -1,7 +1,5 @@
 import json
 import requests
-import os
-import ast
 from typing import Dict, Union
 from tubefox.yt_app_version_updater import get_yt_app_latest_version
 
