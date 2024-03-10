@@ -1,9 +1,9 @@
 import json
 import requests
 import os
-from configparser import ConfigParser
 import ast
 from typing import Dict, Union
+from tubefox.yt_app_version_updater import get_yt_app_latest_version
 
 
 class AppScraper:
@@ -25,6 +25,9 @@ class AppScraper:
         containing necessary configuration parameters such as 'api_url', 'api_key', and 'headers'.
     """
 
+    latest_version = get_yt_app_latest_version()
+    version_to_use = '19.08.36' if latest_version is None else latest_version
+
     def __init__(self, video_id: str) -> None:
         self.video_id: str = video_id
         self.data_dict = self.get_data
@@ -37,12 +40,12 @@ class AppScraper:
         Returns:
             dict: A dictionary containing the scraped data, or None if the request fails.
         """
-        config = self.read_config()
-        config.read('config.ini')
-        api_url = config.get('Settings', 'api_url')
-        api_key = config.get('Settings', 'api_key')
-        headers_str = config.get('Settings', 'headers')
-        headers = ast.literal_eval(headers_str)
+        api_url = 'https://www.youtube.com/youtubei/v1/player?key='
+        api_key = 'AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w'
+        headers = {
+            'Content-Type': 'application/json',
+            'User-Agent': f'com.google.android.youtube/{AppScraper.version_to_use} (Linux; U; Android 12; GB) gzip'
+        }
 
         try:
             payload = {
@@ -50,7 +53,7 @@ class AppScraper:
                 "context": {
                     "client": {
                         "clientName": "ANDROID",
-                        "clientVersion": "17.10.35",
+                        "clientVersion": f"{AppScraper.version_to_use}",
                         "androidSdkVersion": 30
                     }
                 }
@@ -62,22 +65,3 @@ class AppScraper:
         except requests.RequestException:
             pass
         return {}
-
-    def read_config(self) -> ConfigParser:
-        """
-        Read configuration settings from the config.ini file.
-
-        Returns:
-            ConfigParser: A ConfigParser object containing the configuration settings.
-        """
-        # Get the current directory path of the script
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-
-        # Build the absolute path to the config.ini file
-        config_path = os.path.join(current_dir, 'config.ini')
-
-        # Create a configuration parser object
-        config = ConfigParser()
-        config.read(config_path)
-
-        return config
