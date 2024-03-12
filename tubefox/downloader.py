@@ -1,8 +1,15 @@
 import requests
-from tqdm import tqdm
+import logging
+from tubefox.yt_app_version_updater import get_yt_app_latest_version
+
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class Downloader:
+
+
     """
     Downloader class for downloading files from URLs.
 
@@ -29,6 +36,9 @@ class Downloader:
         This class utilizes the requests library for making HTTP requests and tqdm for displaying progress bars.
     """
 
+    latest_version = get_yt_app_latest_version()
+    version_to_use = '19.08.36' if latest_version is None else latest_version
+
     def __init__(self, path: str, filename: str, file_type: str, download_link: str, extension: str,
                  chunk_size: int = 1024) -> None:
         self.path: str = path
@@ -47,25 +57,21 @@ class Downloader:
         """
         # Check if the link is empty or None
         if not self.download_link:
-            print(f"No {self.file_type} download link available.")
+            logger.error(f"No {self.file_type} download link available.")
             return
 
         headers = {
             'Content-Type': 'application/json',
-            'User-Agent': 'com.google.android.youtube/17.36.4 (Linux; U; Android 12; GB) gzip'
+            'User-Agent': f'com.google.android.youtube/{Downloader.version_to_use} (Linux; U; Android 12; GB) gzip'
         }
 
         response = requests.get(self.download_link, stream=True, headers=headers)
         if response.status_code == 200:
-            total_size = int(response.headers.get('content-length', 0))
-            print(f"Start download {self.file_type}")
-            with open(f'{self.path}{self.filename}.{self.extension}', 'wb') as file, tqdm(
-                    desc=f"{self.filename}.{self.extension}", total=total_size, unit='B', unit_scale=True
-            ) as progress_bar:
+            logger.info(f"Start download {self.file_type}")
+            with open(f'{self.path}{self.filename}.{self.extension}', 'wb') as file:
                 for chunk in response.iter_content(chunk_size=self.chunk_size):
                     if chunk:
                         file.write(chunk)
-                        progress_bar.update(len(chunk))
-            print(f"{self.file_type} downloaded")
+            logger.info(f"{self.file_type} downloaded")
         else:
-            print("Error connecting")
+            logger.error("Error connecting")
