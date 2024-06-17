@@ -61,5 +61,5 @@ class Subtitles:
         for block in text_blocks:
             convertor = TimeConvertor(float(block['start']), float(block['dur']))
             formatted_subtitles += (f'{text_blocks.index(block)+1}\n{convertor.convert_start_time} --> '
-                                    f'{convertor.convert_end_time}\n{html.unescape(block.text)}\n')
+                                    f'{convertor.convert_end_time}\n{html.unescape(block.text)}\n\n')
         return formatted_subtitles

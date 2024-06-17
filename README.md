@@ -62,7 +62,6 @@ TubeFox uses the following open-source libraries:
 ```python
 BeautifulSoup
 requests
-tqdm
 ```
 ## Disclaimer
 This project is not affiliated with or endorsed by YouTube. Use responsibly and respect the terms of service of the platforms you interact with.
