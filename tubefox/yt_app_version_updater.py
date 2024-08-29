@@ -15,7 +15,7 @@ def get_yt_app_latest_version():
     - The latest version of the YouTube app if successful.
     - None if there's an error during the process.
     """
-    url = 'https://androidapksfree.com/youtube/com-google-android-youtube/old/'
+    url = 'https://apkcombo.com/youtube/com.google.android.youtube/download/apk'
 
     try:
         # Making a GET request to fetch the webpage
@@ -29,10 +29,10 @@ def get_yt_app_latest_version():
     try:
         # Parsing the HTML content of the webpage
         soup = BeautifulSoup(response.content, 'html.parser')
-        version_element = soup.find('span', class_='limit-line')
+        version_element = soup.find('span', class_='vername')
         if version_element:
             # Stripping whitespace and extracting the first 8 characters of the version text
-            version_text = version_element.get_text().strip()[:8]
+            version_text = version_element.get_text().strip()[8:]
             return version_text
         else:
             # Logging a warning if the version element is not found
